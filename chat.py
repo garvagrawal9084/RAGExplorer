@@ -14,26 +14,25 @@ st.set_page_config(page_title="RAG Project", page_icon="📄", layout="centered"
 st.title("📚 RAG PROJECT")
 
 # Sidebar for API key
-# with st.sidebar:
-#     st.markdown("## 🔑 OpenAI API Key")
-#     st.markdown("Please enter your OpenAI API key below to use the app.")
-#     api_key_input = st.text_input("API Key", type="password", placeholder="sk-...")
+with st.sidebar:
+    st.markdown("## 🔑 OpenAI API Key")
+    st.markdown("Please enter your OpenAI API key below to use the app.")
+    api_key_input = st.text_input("API Key", type="password", placeholder="sk-...")
 
-#     if api_key_input:
-#         st.session_state.openai_api_key = api_key_input
+    if api_key_input:
+        st.session_state.openai_api_key = api_key_input
 
 # Check for API key before showing uploader
-# if st.session_state.get("openai_api_key"):
-#     uploaded_file = st.file_uploader("📤 Upload your file")
-# else:
-#     st.warning("⚠️ Please enter your OpenAI API key in the sidebar to continue.")
-    # st.stop()
+if st.session_state.get("openai_api_key"):
+    uploaded_file = st.file_uploader("📤 Upload your file")
+else:
+    st.warning("⚠️ Please enter your OpenAI API key in the sidebar to continue.")
+    st.stop()
 
-uploaded_file = st.file_uploader("📤 Upload your file")
 
 # Run indexing after file upload
 if uploaded_file:
-    response = indexing(uploaded_file)
+    response = indexing(uploaded_file , st.session_state.openai_api_key)
 
     if response:
         st.success(response)
@@ -50,10 +49,13 @@ if uploaded_file:
 
             with st.spinner("🔍 Searching from docs..."):
                 # Use user's API key
-                client = OpenAI()
+                client = OpenAI(
+                    api_key=st.session_state.openai_api_key
+                )
 
                 embedding = OpenAIEmbeddings(
                     model="text-embedding-3-large",
+                    openai_api_key=st.session_state.openai_api_key
                 )
 
                 vectorDB = QdrantVectorStore.from_existing_collection(

@@ -7,10 +7,10 @@ import tempfile
 import os
 import qdrant_client
 
-load_dotenv()
+# load_dotenv()
 
 
-def indexing (file):
+def indexing (file , api_key):
     # Load the file
 
      # Extract collection name from filename
@@ -48,7 +48,8 @@ def indexing (file):
     # Vector Embedding 
 
     embedding = OpenAIEmbeddings(
-        model="text-embedding-3-large" 
+        model="text-embedding-3-large" ,
+        openai_api_key=api_key
     )
 
     # Using embedding_model create embedding of split_docs and store in db
