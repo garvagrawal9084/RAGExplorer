@@ -1,0 +1,7 @@
+openai
+streamlit
+langchain_openai
+langchain_qdrant
+langchain-community 
+pypdf
+langchain_text_splitters
